@@ -1,4 +1,4 @@
-<!-- <script setup>
+<script setup>
 
 </script>
 
@@ -85,20 +85,5 @@
 
 <style scoped>
 
-</style> -->
-
-
-
-<script setup>
-
-</script>
-
-<template>
-  <div>
-    
-  </div>
-</template>
-
-<style scoped>
-
 </style>
+
