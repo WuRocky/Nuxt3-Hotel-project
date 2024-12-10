@@ -1,10 +1,5 @@
 <script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 const modules = ref([Autoplay, Navigation, Pagination]);
 
@@ -12,16 +7,10 @@ const modules = ref([Autoplay, Navigation, Pagination]);
 
 <template>
     <section class="hero position-relative">
-        <swiper
+        <Swiper
             :modules="modules"
-            :slides-per-view="1"
-            :pagination="true"
-            :autoplay="{
-                delay: 3000,
-                disableOnInteraction: false,
-            }"
         >
-            <swiper-slide
+            <SwiperSlide
                 v-for="(num, index) in 5"
                 :key="index"
             >
@@ -36,8 +25,8 @@ const modules = ref([Autoplay, Navigation, Pagination]);
                         alt="hero banner"
                     >
                 </picture>
-            </swiper-slide>
-        </swiper>
+            </SwiperSlide>
+        </Swiper>
 
         <div class="hero-wrapper d-flex flex-column justify-content-center align-items-center flex-md-row justify-content-md-between gap-md-10 w-100 px-md-20 position-absolute z-2">
             <div class="d-flex flex-column align-items-center text-center d-md-block text-md-start">

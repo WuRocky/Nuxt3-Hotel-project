@@ -1,10 +1,6 @@
 <script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 const modules = ref([Autoplay, Navigation, Pagination]);
 
@@ -23,7 +19,7 @@ const slideNext = () => {
 <template>
     <section class="room-intro position-relative px-3 py-20 px-md-0 py-md-30 bg-neutral-120">
         <div class="d-flex flex-column flex-md-row justify-content-center align-items-center justify-content-md-start align-items-md-end gap-6 gap-md-20">
-            <swiper
+            <Swiper
                 ref="roomSwiper"
                 :modules="modules"
                 :slides-per-view="1"
@@ -34,7 +30,7 @@ const slideNext = () => {
                 }"
                 :loop="true"
             >
-                <swiper-slide
+                <SwiperSlide
                     v-for="(num, index) in 5"
                     :key="index"
                 >
@@ -49,8 +45,8 @@ const slideNext = () => {
                         alt="room-a"
                     >
                     </picture>
-                </swiper-slide>
-            </swiper>
+                </SwiperSlide>
+            </Swiper>
             
             <div class="room-intro-content text-neutral-0">
                 <h2 class="mb-2 mb-md-4 fw-bold">

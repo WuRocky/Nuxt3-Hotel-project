@@ -1,20 +1,43 @@
 <script setup>
-//  Swiper JS 核心功能
 import Swiper from "swiper";
 
-// Swiper 核心與模組的樣式
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const props = defineProps({
-    autoplay: Object,
-    pagination: Object,
-    navigation: Object,
-    loop: Boolean,
-    slidesPerView: Number,
-    modules: Array,
-    breakpoints: Object,
+  modules: {
+    type: Array,
+    required: true,
+  },
+  autoplay: {
+    type: Object,
+    default: {
+      delay: 3000,
+    },
+  },
+  pagination: {
+    type: Object,
+    default: { 
+      el: ".swiper-pagination",
+      type: "bullets",
+    },
+  },
+  navigation: {
+    type: Object,
+    default: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+  },
+  loop: {
+    type: Boolean,
+    default: true,
+  },
+  slidesPerView: {
+    type: Number,
+    default: 1,
+  },
 });
 
 const swiperRef = ref(null);
@@ -28,11 +51,8 @@ onMounted(() => {
         <div class="swiper-wrapper">
             <slot />
         </div>
-        <!-- <div class="swiper-pagination"></div> -->
-<!-- 
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div> -->
+        <div class="swiper-pagination"></div>
     </div>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
