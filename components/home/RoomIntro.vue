@@ -23,7 +23,6 @@ const slideNext = () => {
                 ref="roomSwiper"
                 :modules="modules"
                 :slides-per-view="1"
-                :pagination="true"
                 :autoplay="{
                     delay: 5000,
                     disableOnInteraction: false,

@@ -10,7 +10,6 @@ const modules = ref([Autoplay, Navigation, Pagination]);
     <Swiper
       :modules="modules"
       :slides-per-view="1"
-      :pagination="true"
       :autoplay="{
         delay: 3000,
         disableOnInteraction: false,
