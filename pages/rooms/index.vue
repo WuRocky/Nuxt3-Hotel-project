@@ -5,7 +5,7 @@
 
 <template>
   <main>
-    <!-- <RoomHore/> -->
+    <RoomHore/>
   
     <RoomSection/>
   </main>
