@@ -1,7 +1,7 @@
 <script setup>
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import {  Autoplay, Navigation, Pagination } from 'swiper/modules';
 
-const modules = ref([Autoplay, Navigation, Pagination]);
+const modules = ref([ Autoplay, Navigation, Pagination]);
 
 </script>
 
@@ -9,7 +9,8 @@ const modules = ref([Autoplay, Navigation, Pagination]);
     <section class="hero position-relative">
         <Swiper
             :modules="modules"
-        >
+            :showNavigation="false" 
+            >
             <SwiperSlide
                 v-for="(num, index) in 5"
                 :key="index"
@@ -48,13 +49,13 @@ const modules = ref([Autoplay, Navigation, Pagination]);
                 <p class="text-neutral-40 fw-semibold">
                     我們致力於為您提供無與倫比的奢華體驗與優質服務
                 </p>
-                <RouterLink 
+                <NuxtLink 
                     to="/rooms"
                     class="btn btn-neutral-0 d-flex justify-content-end align-items-center gap-3 w-100 text-end text-neutral-100 fs-5 fw-semibold border-0"
                 >
                     立即訂房
                     <div class="cta-deco" />
-                </RouterLink>
+                </NuxtLink>
                 </div>
             </div>
         </div>
@@ -74,7 +75,28 @@ const modules = ref([Autoplay, Navigation, Pagination]);
         xxxl: 1537px
     );
 
+    section .btn {
+      --primary: #BF9D7D;
+      --neutral: #FFFFFF;
+      height: clamp(4rem, 12vh, 7.25rem);
+      padding: 5%;
 
+      &:hover {
+        box-shadow: inset 48vw 0 0 0 var(--primary);
+        color: var(--neutral) !important;
+        transition-duration: 0.25s;
+
+        .cta-deco {
+          background-color: var(--neutral) !important;
+          width: 8vw;
+        }
+      }
+
+      @include media-breakpoint-down(md) {
+        height: 4rem;
+      }
+    }
+    
     .cta-deco {
         width: 10vw;
         height: 1px;

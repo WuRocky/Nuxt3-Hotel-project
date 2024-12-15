@@ -1,7 +1,51 @@
 <script setup>
 definePageMeta({
-  layout: 'userlayout'
+  layout: 'account'
 });
+const router = useRouter();
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl
+const { $swal } = useNuxtApp();
+const userLoginObject = ref({
+  email: "",
+  password: "",
+});
+const isEnabled = ref(false);
+const loginAccount = async (body) => {
+  isEnabled.value = true
+  try {
+    const { token } = await $fetch(`${apiUrl}api/v1/user/login`, {
+      method: "POST",
+      body: {...body}
+    });
+    const cookie = useCookie("auth", {
+      path: "/",
+      maxAge: 6000,
+    });
+    cookie.value = token;
+    $swal.fire({
+        position: "center",
+        icon: "success",
+        title: "恭喜您登入成功",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    router.push("/member/orders");
+  } catch(error) {
+      const { message } = error.response._data;
+      if (Array.isArray(message)) {
+        alert(message.join("、"));
+        return;
+      }
+      $swal.fire({
+        position: "center",
+        icon: "error",
+        title: "登入失敗",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+  }
+};
 </script>
 
 <template>
@@ -15,7 +59,7 @@ definePageMeta({
       </h1>
     </div>
 
-    <form class="mb-10">
+    <form @submit.prevent="loginAccount(userLoginObject)" class="mb-10">
       <div class="mb-4 fs-8 fs-md-7">
         <label
           class="mb-2 text-neutral-0 fw-bold"
@@ -26,9 +70,10 @@ definePageMeta({
         <input
           id="email"
           class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
-          value="jessica@sample.com"
           placeholder="請輸入信箱"
           type="email"
+          v-model="userLoginObject.email"
+          title="請輸入有效的電子信箱格式"
         >
       </div>
       <div class="mb-4 fs-8 fs-md-7">
@@ -41,9 +86,12 @@ definePageMeta({
         <input
           id="password"
           class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
-          value="jessica@sample.com"
           placeholder="請輸入密碼"
           type="password"
+          pattern=".{8,}"
+          required
+          v-model="userLoginObject.password"
+          title="密碼需至少 8 個字元"
         >
       </div>
       <div class="d-flex justify-content-between align-items-center mb-10 fs-8 fs-md-7">
@@ -70,7 +118,7 @@ definePageMeta({
       </div>
       <button
         class="btn btn-primary-100 w-100 py-4 text-neutral-0 fw-bold"
-        type="button"
+        type="submit"
       >
         會員登入
       </button>
@@ -79,7 +127,7 @@ definePageMeta({
     <p class="mb-0 fs-8 fs-md-7">
       <span class="me-2 text-neutral-0 fw-medium">沒有會員嗎？</span>
       <NuxtLink
-        to="signup"
+        to="/account/register"
         class="text-primary-100 fw-bold text-decoration-underline bg-transparent border-0"
       >
         <span>前往註冊</span>

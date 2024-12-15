@@ -1,8 +1,16 @@
 <script setup>
-
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl
+const getUserCookie = useCookie("auth");  
+const { data } = await useFetch(`${apiUrl}api/v1/user/`, {
+  headers: {
+    Authorization: `Bearer ${getUserCookie.value}`,
+  },
+});
 </script>
 
 <template>
+  <AppHeader />
   <main class="pt-18 pt-md-30 bg-neutral-120">
     <section class="position-relative">
       <picture>
@@ -25,7 +33,7 @@
             alt="avatar"
           >
           <h1 class="text-neutral-0 fw-bold">
-            Hello，Jessica
+            Hello，{{ data.result.name }}
           </h1>
         </div>
       </div>
@@ -36,11 +44,7 @@
         <ul class="nav mb-10 mb-md-20 fw-bold">
           <li class="nav-item position-relative">
             <NuxtLink
-              :to="{
-                params: {
-                  userId: $route.params.userId
-                }
-              }"
+              to="/member/profile"
               exact-active-class="text-primary-100"
               class="nav-link px-6 py-4 text-white"
             >
@@ -49,11 +53,7 @@
           </li>
           <li class="nav-item position-relative">
             <NuxtLink
-              :to="{
-                params: {
-                  userId: $route.params.userId
-                }
-              }"
+              to="/member/orders"
               exact-active-class="text-primary-100"
               class="nav-link px-6 py-4 text-white"
             >
@@ -78,6 +78,7 @@
       >
     </picture>
   </main>
+  <AppFooter />
 </template>
 
 <style lang="scss" scoped>

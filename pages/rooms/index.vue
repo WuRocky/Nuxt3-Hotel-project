@@ -5,9 +5,8 @@
 
 <template>
   <main>
-    <RoomHore/>
-  
-    <RoomSection/>
+    <RoomsHore/>
+    <RoomsSection/>
   </main>
 </template>
 

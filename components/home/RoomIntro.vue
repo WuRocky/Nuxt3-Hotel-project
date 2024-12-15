@@ -20,14 +20,8 @@ const slideNext = () => {
     <section class="room-intro position-relative px-3 py-20 px-md-0 py-md-30 bg-neutral-120">
         <div class="d-flex flex-column flex-md-row justify-content-center align-items-center justify-content-md-start align-items-md-end gap-6 gap-md-20">
             <Swiper
-                ref="roomSwiper"
                 :modules="modules"
-                :slides-per-view="1"
-                :autoplay="{
-                    delay: 5000,
-                    disableOnInteraction: false,
-                }"
-                :loop="true"
+                :showNavigation="false" 
             >
                 <SwiperSlide
                     v-for="(num, index) in 5"
@@ -221,4 +215,68 @@ const slideNext = () => {
             flex-grow: 1;
         }
     }
+
+
+    .swiper :deep(.swiper-button-prev),
+    .swiper :deep(.swiper-button-next) {
+        width: 56px;
+        height: 56px;
+        background-color: #FFFFFF;
+        color: #4B4B4B;
+        border-radius: 100px;
+
+        @include media-breakpoint-down(md) {
+            display: none;
+        }
+    }
+
+    .swiper :deep(.swiper-button-prev::after),
+    .swiper :deep(.swiper-button-next::after) {
+        font-size: 40px;
+    }
+
+    .swiper :deep(.swiper-button-prev::after) {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z'/%3E%3C/svg%3E");
+        background-color: currentColor;
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+
+    .swiper :deep(.swiper-button-next::after) {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12.6 12L8 7.4L9.4 6l6 6l-6 6L8 16.6z'/%3E%3C/svg%3E");
+        background-color: currentColor;
+        -webkit-mask-image: var(--svg);
+        mask-image: var(--svg);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+
+    .swiper :deep(.swiper-pagination) {
+        bottom: 24px;
+    }
+
+    .swiper :deep(.swiper-pagination-bullet) {
+        width: 32px;
+        height: 4px;
+        background-color: #F1EAE4;
+        border-radius: 100px;
+        opacity: 1;
+    }
+
+    .swiper :deep(.swiper-pagination-bullet-active) {
+        width: 60px;
+        background-color: #BF9D7D;
+    } 
 </style>

@@ -2,9 +2,108 @@
 definePageMeta({
   layout: 'account'
 });
+const { $swal } = useNuxtApp();
+const router = useRouter();
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl
+const userRegisteObject = ref({
+  name: "",
+  email: "",
+  password: "",
+  phone: "",
+  birthday: {
+    year: "",
+    month: "",
+    day: "",
+  },
+  address: {
+    zipcode: "",
+    detail: "",
+  },
+});
+const processRegistration = async (requestBody) => {
+  if (!requestBody.birthday.year || !requestBody.birthday.month || !requestBody.birthday.day) {
+    $swal.fire({
+      position: "center",
+      icon: "error",
+      title: "請填寫完整的生日",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    return;
+  }
 
+  try {
+    requestBody.birthday = `${requestBody.birthday.year}/${requestBody.birthday.month}/${requestBody.birthday.day}`;
+
+    const formattedBody = {
+      ...requestBody,
+    };
+
+    const response = await $fetch(`${apiUrl}api/v1/user/signup`, {
+      method: "POST",
+      body: formattedBody,
+    });
+
+    await $swal.fire({
+      position: "center",
+      icon: "success",
+      title: "註冊成功",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    router.push("/account/login");
+  } catch (error) {
+    const { message } = error.response._data || error;
+    $swal.fire({
+      position: "center",
+      icon: "error",
+      title: message,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  }
+};
+
+const handleNextStep = () => {
+  const password = userRegisteObject.value.password;
+  if (password.length < 8) {
+    $swal.fire({
+      position: "center",
+      icon: "error",
+      title: "密碼需至少 8 個字元",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    return;
+  }
+
+  if (/^\d+$/.test(password)) {
+    $swal.fire({
+      position: "center",
+      icon: "error",
+      title: "密碼不能只有數字",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    return;
+  }
+
+  if (password !== confirmPassword.value) {
+    $swal.fire({
+      position: "center",
+      icon: "error",
+      title: "密碼不一致",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    return;
+  }
+  isEmailAndPasswordValid.value = true;
+};
 
 const isEmailAndPasswordValid = ref(false);
+
 </script>
 
 <template>
@@ -69,8 +168,10 @@ const isEmailAndPasswordValid = ref(false);
           <input
             id="email"
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
-            placeholder="hello@exsample.com"
             type="email"
+            placeholder="example@gmail.com"
+            required
+            v-model="userRegisteObject.email"
           >
         </div>
         <div class="mb-4 fs-8 fs-md-7">
@@ -83,7 +184,10 @@ const isEmailAndPasswordValid = ref(false);
           <input
             id="password"
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
-            placeholder="請輸入密碼"
+            placeholder="請輸入 8 碼以上密碼"
+            pattern=".{8,}"
+            required
+            v-model="userRegisteObject.password"
             type="password"
           >
         </div>
@@ -98,13 +202,15 @@ const isEmailAndPasswordValid = ref(false);
             id="confirmPassword"
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40"
             placeholder="請再輸入一次密碼"
+            pattern=".{8,}"
+            required
             type="password"
           >
         </div>
         <button
           class="btn btn-neutral-40 w-100 py-4 text-neutral-60 fw-bold"
           type="button"
-          @click="isEmailAndPasswordValid = true"
+          @click="handleNextStep"
         >
           下一步
         </button>
@@ -125,6 +231,8 @@ const isEmailAndPasswordValid = ref(false);
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40  rounded-3"
             placeholder="請輸入姓名"
             type="text"
+            required
+            v-model="userRegisteObject.name"
           >
         </div>
         <div class="mb-4 fs-8 fs-md-7">
@@ -139,6 +247,9 @@ const isEmailAndPasswordValid = ref(false);
             class="form-control p-4 text-neutral-100 fw-medium border-neutral-40  rounded-3"
             placeholder="請輸入手機號碼"
             type="tel"
+            pattern="(\+886|0)?9\d{8}|(\+886|0)?2\d{8}|\d{3}-\d{4}-\d{4}"
+            required
+            v-model="userRegisteObject.phone"
           >
         </div>
         <div class="mb-4 fs-8 fs-md-7">
@@ -154,33 +265,36 @@ const isEmailAndPasswordValid = ref(false);
             <select
               id="birth"
               class="form-select p-4 text-neutral-80 fw-medium rounded-3"
+              v-model="userRegisteObject.birthday.year"
             >
               <option
                 v-for="year in 65"
                 :key="year"
-                value="`${year + 1958} 年`"
+                :value="year + 1958"
               >
                 {{ year + 1958 }} 年
               </option>
             </select>
             <select
               class="form-select p-4 text-neutral-80 fw-medium rounded-3"
+              v-model="userRegisteObject.birthday.month"
             >
               <option
                 v-for="month in 12"
                 :key="month"
-                value="`${month} 月`"
+                :value="month"
               >
                 {{ month }} 月
               </option>
             </select>
             <select
               class="form-select p-4 text-neutral-80 fw-medium rounded-3"
+              v-model="userRegisteObject.birthday.day"
             >
               <option
                 v-for="day in 30"
                 :key="day"
-                value="`${day} 日`"
+                :value="day"
               >
                 {{ day }} 日
               </option>
@@ -201,12 +315,6 @@ const isEmailAndPasswordValid = ref(false);
               <select
                 class="form-select p-4 text-neutral-80 fw-medium rounded-3"
               >
-                <option value="臺北市">
-                  臺北市
-                </option>
-                <option value="臺中市">
-                  臺中市
-                </option>
                 <option
                   selected
                   value="高雄市"
@@ -216,16 +324,17 @@ const isEmailAndPasswordValid = ref(false);
               </select>
               <select
                 class="form-select p-4 text-neutral-80 fw-medium rounded-3"
+                v-model="userRegisteObject.address.zipcode"
               >
-                <option value="前金區">
+                <option value="801">
                   前金區
                 </option>
-                <option value="鹽埕區">
+                <option value="803">
                   鹽埕區
                 </option>
                 <option
                   selected
-                  value="新興區"
+                  value="800"
                 >
                   新興區
                 </option>
@@ -236,6 +345,8 @@ const isEmailAndPasswordValid = ref(false);
               type="text"
               class="form-control p-4 rounded-3"
               placeholder="請輸入詳細地址"
+              required
+              v-model="userRegisteObject.address.detail"
             >
           </div>
         </div>
@@ -246,6 +357,7 @@ const isEmailAndPasswordValid = ref(false);
             class="form-check-input"
             type="checkbox"
             value=""
+            required
           >
           <label
             class="form-check-label fw-bold"
@@ -256,7 +368,8 @@ const isEmailAndPasswordValid = ref(false);
         </div>
         <button
           class="btn btn-primary-100 w-100 py-4 text-neutral-0 fw-bold"
-          type="button"
+          type="submit"
+          @click.prevent="processRegistration(userRegisteObject)"
         >
           完成註冊
         </button>

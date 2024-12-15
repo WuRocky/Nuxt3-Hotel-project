@@ -38,11 +38,19 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  showNavigation: {
+    type: Boolean,
+    default: true, // 默認顯示導航按鈕
+
+  },
 });
 
 const swiperRef = ref(null);
 onMounted(() => {
-    new Swiper(swiperRef.value, props);
+  new Swiper(swiperRef.value, {
+    ...props,
+    navigation: props.showNavigation ? props.navigation : false, // 動態配置 navigation
+  });
 });
 </script>
 
@@ -52,6 +60,15 @@ onMounted(() => {
             <slot />
         </div>
         <div class="swiper-pagination"></div>
+
+        <div 
+          class="swiper-button-next" 
+          v-if="showNavigation">
+        </div>
+        <div 
+          class="swiper-button-prev" 
+          v-if="showNavigation">
+        </div>
     </div>
 </template>
 

@@ -1,7 +1,19 @@
 <script setup>
 definePageMeta({
-  layout: 'userlayout'
+  layout: 'userlayout',
+  middleware: "auth",
 });
+
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl
+const getUserCookie = useCookie("auth"); 
+const { data } = await useFetch(`${apiUrl}api/v1/orders`, {
+  headers: {
+    Authorization: `Bearer ${getUserCookie.value}`,
+  },
+});
+console.log("test",data.value.result);
+
 const roomId = 'a'; 
 </script>
 
