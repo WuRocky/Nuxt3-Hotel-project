@@ -114,7 +114,6 @@ const clearDate = () => {
     id="dateModal"
     class="modal fade"
     tabindex="-1"
-    aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered m-0 mt-9 mx-md-auto">
       <div

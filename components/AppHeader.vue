@@ -1,5 +1,8 @@
 <script setup>
+const route = useRoute();
+const transparentBgRoute = ['index','rooms'];
 
+const isTransparentRoute = computed(() => transparentBgRoute.includes(route.name));
 const isScrolled = ref(false);
 
 const handleScroll = () => {
@@ -37,12 +40,13 @@ onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
 </script>
-Template
-html
-複製程式碼
 <template>
   <header
-    :class="{ 'scrolled': isScrolled }"
+  :class="{
+      'scrolled': isScrolled,
+      'bg-transparent': isTransparentRoute,
+      'bg-neutral-120': !isTransparentRoute
+    }"
     class="position-fixed top-0 z-3 w-100"
   >
     <nav class="navbar navbar-expand-md p-0 px-3 py-4 px-md-20 py-md-6">

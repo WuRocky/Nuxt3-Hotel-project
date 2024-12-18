@@ -12,9 +12,24 @@ const { data } = await useFetch(`${apiUrl}api/v1/orders`, {
     Authorization: `Bearer ${getUserCookie.value}`,
   },
 });
-console.log("test",data.value.result);
-
 const roomId = 'a'; 
+// try {
+//   const { data, error } = await useFetch(`${apiUrl}api/v1/admin/orders/6762c626bb915c2baf17a7cf
+// `, {
+//     method: "DELETE",
+//     headers: {
+//       Authorization: `Bearer ${getUserCookie.value}`, // 傳遞授權 Token
+//     },
+//   });
+
+//   if (error.value) {
+//     console.error("刪除失敗:", error.value);
+//   } else {
+//     console.log("刪除成功:", data.value);
+//   }
+// } catch (err) {
+//   console.error("請求出現錯誤:", err);
+// }
 </script>
 
 <template>
@@ -291,6 +306,8 @@ const roomId = 'a';
         </div>
       </div>
     </div>
+
+
     <div class="col-12 col-md-5">
       <div
         class="rounded-3xl d-flex flex-column gap-6 gap-md-10 p-4 p-md-10 bg-neutral-0"
@@ -298,6 +315,51 @@ const roomId = 'a';
         <h2 class="mb-0 text-neutral-100 fs-7 fs-md-5 fw-bold">
           歷史訂單
         </h2>
+
+        <div v-for="(order, index) in data.result" :key="index">
+          <div class="d-flex flex-column flex-lg-row gap-6">
+            <img
+              class="img-fluid object-fit-cover rounded-3"
+              style="max-width: 120px; height: 80px;"
+              src="@/assets/images/room-b-sm-1.png"
+              alt="room-a"
+            >
+            <section class="d-flex flex-column gap-4">
+              <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-medium">
+                預訂參考編號： {{order._id}}
+              </p>
+            
+              <h3 class="d-flex align-items-center mb-0 text-neutral-80 fs-8 fs-md-6 fw-bold">
+                尊爵雙人房
+              </h3>
+
+              <div class="text-neutral-80 fw-medium">
+                <p class="mb-2">
+                  住宿天數： 1 晚
+                </p>
+                <p class="mb-0">
+                  住宿人數：2 位
+                </p>
+              </div>
+
+              <div class="text-neutral-80 fs-8 fs-md-7 fw-medium">
+                <p class="title-deco mb-2">
+                  入住：6 月 10 日星期二，15:00 可入住
+                </p>
+                <p
+                  class="title-deco mb-0"
+                >
+                  退房：6 月 11 日星期三，12:00 前退房
+                </p>
+              </div>
+              <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-bold">
+                NT$ 10,000
+              </p>
+            </section>
+          </div>
+
+          <hr class="my-0 opacity-100 text-neutral-40">
+        </div>
 
         <div class="d-flex flex-column flex-lg-row gap-6">
           <img

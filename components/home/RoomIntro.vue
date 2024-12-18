@@ -6,12 +6,21 @@ const modules = ref([Autoplay, Navigation, Pagination]);
 
 const roomSwiper = ref(null);
 
+const config = useRuntimeConfig();
+const apiUrl = config.public.apiUrl
+const { data } = await useFetch(`${apiUrl}api/v1/rooms`);
+
+
 const slidePrev = () => {
-    roomSwiper.value.$el.swiper.slidePrev();
+    if (roomSwiper.value?.swiper) {
+        roomSwiper.value.swiper.slidePrev();
+    }
 }
 
 const slideNext = () => {
-    roomSwiper.value.$el.swiper.slideNext();
+    if (roomSwiper.value?.swiper) {
+        roomSwiper.value.swiper.slideNext();
+    }
 }
 
 </script>
@@ -24,18 +33,19 @@ const slideNext = () => {
                 :showNavigation="false" 
             >
                 <SwiperSlide
-                    v-for="(num, index) in 5"
+                
+                    v-for="(num, index) in data.result"
                     :key="index"
                 >
                     <picture>
                     <source
-                        srcset="@/assets/images/home-room-1.png"
+                        :srcset="num.imageUrl"
                         media="(min-width:768px)"
                     >
                     <img
                         class="w-100"
-                        src="@/assets/images/home-room-sm-1.png"
-                        alt="room-a"
+                        :src="num.imageUrl"
+                        :alt="data.result.name"
                     >
                     </picture>
                 </SwiperSlide>

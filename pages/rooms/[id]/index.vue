@@ -31,6 +31,7 @@ const bookingDate = reactive({
   maxDate: new Date(currentDate.setFullYear(currentDate.getFullYear() + 1))
 });
 
+
 const handleDateChange = (bookingInfo) => {
   const { start, end } = bookingInfo.date;
   bookingDate.date.start = start;
@@ -39,7 +40,6 @@ const handleDateChange = (bookingInfo) => {
   bookingPeople.value = bookingInfo?.people || 1;
   daysCount.value = bookingInfo.daysCount;
 }
-
 
 const route = useRoute();
 const config = useRuntimeConfig();
@@ -50,7 +50,6 @@ const { id } = route.params;
 const { data } = await useFetch(`${apiUrl}api/v1/rooms/${id}`);
 const roomData = ref({});
 roomData.value = data.value.result
-console.log(roomData.value);
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -73,10 +72,17 @@ const showMore = () => {
     visibleGroupCount.value += 2;
   }
 };
+const newPrice = ref([]) 
 
 const formatPrice = (value) => {
-  return new Intl.NumberFormat('en-US').format(value);
+  if (daysCount.value == 0){
+    return new Intl.NumberFormat('zh-TW').format(value);
+  } else {
+    newPrice.value =value * daysCount.value.value;
+    return new Intl.NumberFormat('zh-TW').format(newPrice.value);
+  }
 };
+
 </script>
 
 <template>
@@ -351,7 +357,7 @@ const formatPrice = (value) => {
                 NT$ {{ formatPrice(roomData.price) }}
               </h5>
               <NuxtLink
-                to="/booking/"
+                :to="`/rooms/${id}/booking`"
                 class="btn btn-primary-100 py-4 text-neutral-0 fw-bold rounded-3"
               >
                 立即預訂
@@ -379,7 +385,7 @@ const formatPrice = (value) => {
             <span class="text-neutral fs-9 fw-medium text-decoration-underline">{{ daysFormatOnMobile(bookingDate.date?.start) }} - {{ daysFormatOnMobile(bookingDate.date?.end) }}</span>
           </div>
           <NuxtLink
-            :to="{ params: { roomId: $route.params.roomId } }"
+            :to="`/rooms/${id}/booking`"
             class="btn btn-primary-100 px-12 py-4 text-neutral-0 fw-bold rounded-3"
           >
             立即預訂
