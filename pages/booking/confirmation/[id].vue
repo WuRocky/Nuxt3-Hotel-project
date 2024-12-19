@@ -9,6 +9,24 @@ const { data } = await useFetch(`${config.public.apiUrl}api/v1/orders/${id}`, {
     Authorization: `Bearer ${getUserCookie.value}`,
   }
 })
+
+const daysCount = computed(() => {
+  const start = new Date(data.value.result.checkInDate);
+  const end = new Date(data.value.result.checkOutDate);
+  const diffTime = end.getTime() - start.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+});
+
+
+const formatToReadableDate = (dateStr) => {
+  const date = new Date(dateStr);
+  return new Intl.DateTimeFormat('zh-TW', {
+    month: 'numeric',
+    day: 'numeric',
+    weekday: 'long',
+  }).format(date);
+};
+
 </script>
 
 <template>
@@ -101,7 +119,7 @@ const { data } = await useFetch(`${config.public.apiUrl}api/v1/orders/${id}`, {
             <section class="d-flex flex-column gap-6">
               <h3 class="d-flex align-items-center mb-6 text-neutral-80 fs-8 fs-md-6 fw-bold">
                 <p class="mb-0">
-                  {{ data.result.userInfo.roomId }}，1 晚
+                  {{ data.result.roomId.name }}，{{ daysCount }} 晚
                 </p>
                 <span
                   class="d-inline-block mx-4 bg-neutral-80"
@@ -114,17 +132,17 @@ const { data } = await useFetch(`${config.public.apiUrl}api/v1/orders/${id}`, {
 
               <div class="text-neutral-80 fs-8 fs-md-7 fw-bold">
                 <p class="title-deco mb-2">
-                  入住：6 月 10 日星期二，15:00 可入住
+                  入住：{{ formatToReadableDate(data.result.checkInDate) }}，15:00 可入住
                 </p>
                 <p
                   class="title-deco mb-0"
                 >
-                  退房：6 月 11 日星期三，12:00 前退房
+                  退房：{{ formatToReadableDate(data.result.checkOutDate)}}，12:00 前退房
                 </p>
               </div>
 
               <p class="mb-0 text-neutral-80 fs-8 fs-md-7 fw-bold">
-                NT$ 10,000
+                {{  }}
               </p>
             </section>
 

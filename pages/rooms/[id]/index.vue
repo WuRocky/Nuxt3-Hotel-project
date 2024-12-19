@@ -1,5 +1,7 @@
 <script setup>
 import DatePickerModal from '@/components/popup/DatePickerModal.vue';
+const bookingStore = useBookingStore();
+const router = useRouter();
 
 const datePickerModal = ref(null);
 
@@ -37,8 +39,14 @@ const handleDateChange = (bookingInfo) => {
   bookingDate.date.start = start;
   bookingDate.date.end = end;
 
-  bookingPeople.value = bookingInfo?.people || 1;
-  daysCount.value = bookingInfo.daysCount;
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const diffTime = endDate.getTime() - startDate.getTime();
+  daysCount.value = Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 1);
+
+  if (roomData.value.price) {
+    newPrice.value = formatPrice(roomData.value.price);
+  }
 }
 
 const route = useRoute();
@@ -75,12 +83,24 @@ const showMore = () => {
 const newPrice = ref([]) 
 
 const formatPrice = (value) => {
-  if (daysCount.value == 0){
-    return new Intl.NumberFormat('zh-TW').format(value);
-  } else {
-    newPrice.value =value * daysCount.value.value;
-    return new Intl.NumberFormat('zh-TW').format(newPrice.value);
+  if (!value || daysCount.value === 0) {
+    return new Intl.NumberFormat('zh-TW').format(value);;
   }
+
+  newPrice.value = value * Math.max(daysCount.value, 1);
+  return new Intl.NumberFormat('zh-TW').format(newPrice.value);
+};
+
+const goToBooking = () => {
+  bookingStore.setBookingDetails({
+    newPrice: newPrice.value,
+    newCheckInDate: bookingDate.date.start,
+    newCheckOutDate: bookingDate.date.end,
+    newPeople: bookingPeople.value,
+    newDay: daysCount.value.value
+  });
+
+  router.push(`/rooms/${id}/booking`);
 };
 
 </script>
@@ -359,6 +379,7 @@ const formatPrice = (value) => {
               <NuxtLink
                 :to="`/rooms/${id}/booking`"
                 class="btn btn-primary-100 py-4 text-neutral-0 fw-bold rounded-3"
+                @click.prevent="goToBooking"
               >
                 立即預訂
               </NuxtLink>

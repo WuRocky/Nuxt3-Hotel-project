@@ -1,7 +1,8 @@
 <script setup>
 definePageMeta({
-  middleware: "auth",
+  middleware: ["auth", "check-booking-data"],
 });
+const bookingStore = useBookingStore();
 const { $swal } = useNuxtApp();
 const router = useRouter();
 const route = useRoute();
@@ -23,11 +24,29 @@ const { data:getUserInfo } = await useFetch(`${apiUrl}api/v1/user`, {
   },
 });
 
+const price = computed(() => bookingStore.price);
+const checkInDate = computed(() => bookingStore.checkInDate);
+const checkOutDate = computed(() => bookingStore.checkOutDate);
+const people = computed(() => bookingStore.people);
+const day = computed(() => bookingStore.day);
+
+const formatPrice = (value) => {
+  return new Intl.NumberFormat('zh-TW').format(value);
+}
+
+
+const totalPrice = computed(() => {
+
+  const rawTotal = price.value - 1000;
+  return new Intl.NumberFormat('zh-TW').format(rawTotal);
+});
+const formatDate = (dateStr) => dateStr.replace(/-/g, '/');
+
 const addOrdersData = ref({
   "roomId": data.value.result._id,
-  "checkInDate": "2023/06/18",
-  "checkOutDate": "2023/06/19",
-  "peopleNum": 2,
+  "checkInDate": formatDate(checkInDate.value),
+  "checkOutDate": formatDate(checkOutDate.value),
+  "peopleNum": people.value,
   "userInfo": {
     "address": {
       "zipcode": getUserInfo.value.result.address.zipcode,
@@ -39,7 +58,6 @@ const addOrdersData = ref({
   }
 })
 
-// const order1 = generateOrderNumber();
 
 const confirmBooking = async () => {
   isLoading.value = true;
@@ -51,6 +69,9 @@ const confirmBooking = async () => {
       },
       body: addOrdersData,
     });
+    bookingStore.setBookingDetails({
+      newPrice: totalPrice
+    })
     setTimeout(() => {
       isLoading.value = false;
       router.push(`/booking/confirmation/${addOrders.value.result._id}`)
@@ -66,9 +87,6 @@ const confirmBooking = async () => {
     });
   }
 }
-
-
-
 </script>
 
 <template>
@@ -137,7 +155,7 @@ const confirmBooking = async () => {
                       房客人數
                     </h3>
                     <p class="mb-0 fw-medium">
-                      2 人
+                      {{ people }} 人
                     </p>
                   </div>
                   <button
@@ -366,15 +384,15 @@ const confirmBooking = async () => {
                 </h2>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <div class="d-flex align-items-center text-neutral-100 fw-medium">
-                    <span>NT$ 10,000</span>
+                    <span>NT$ {{formatPrice(data.result.price)}}</span>
                     <Icon
                       class="ms-2 me-1 text-neutral-80"
                       icon="material-symbols:close"
                     />
-                    <span class="text-neutral-80">2 晚</span>
+                    <span class="text-neutral-80">{{ day }} 晚</span>
                   </div>
                   <span class="fw-medium">
-                    NT$ 20,000
+                    NT$ {{ formatPrice(price) }}
                   </span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center fw-medium">
@@ -391,7 +409,7 @@ const confirmBooking = async () => {
                     總價
                   </p>
                   <span>
-                    NT$ 19,000
+                    NT$ {{ totalPrice }}
                   </span>
                 </div>
               </div>

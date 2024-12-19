@@ -113,7 +113,6 @@ const clearDate = () => {
   <div
     id="dateModal"
     class="modal fade"
-    tabindex="-1"
   >
     <div class="modal-dialog modal-dialog-centered m-0 mt-9 mx-md-auto">
       <div
