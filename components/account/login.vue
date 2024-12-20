@@ -14,7 +14,7 @@
     const loginAccount = async (body) => {
         isEnabled.value = true
         try {
-            const { token } = await $fetch(`${apiUrl}api/v1/user/login`, {
+            const { data } = await $fetch(`${apiUrl}api/v1/user/login`, {
                 method: "POST",
                 body: {...body}
             });
@@ -22,7 +22,14 @@
                 path: "/",
                 maxAge: 6000,
             });
-            cookie.value = token;
+            cookie.value = data.value.token;
+
+            const userEmail = useCookie('userEmail',{
+                path: "/",
+                maxAge: 6000,
+            });
+            userEmail.value = data.value.email;
+
             $swal.fire({
                 position: "center",
                 icon: "success",

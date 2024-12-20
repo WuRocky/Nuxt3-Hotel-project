@@ -2,6 +2,15 @@
 definePageMeta({
   middleware: ["auth", "check-booking-data"],
 });
+
+import ZipCodeMap from '@/assets/zipcodes';
+
+const cities = Array.from(new Set(ZipCodeMap.map(item => item.city))); 
+const selectedCity = ref("");
+const areas = computed(() => {
+  return ZipCodeMap.filter(item => item.city === selectedCity.value);
+});
+
 const bookingStore = useBookingStore();
 const { $swal } = useNuxtApp();
 const router = useRouter();
@@ -230,35 +239,20 @@ const confirmBooking = async () => {
                   >地址</label>
                   <div className="d-flex gap-2 mb-4">
                     <select
+                      v-model="selectedCity"
                       class="form-select w-50 p-4 text-neutral-80 fs-8 fs-md-7 fw-medium rounded-3"
                     >
-                      <option value="臺北市">
-                        臺北市
-                      </option>
-                      <option value="臺中市">
-                        臺中市
-                      </option>
-                      <option
-                        selected
-                        value="高雄市"
-                      >
-                        高雄市
+                      <option value="" disabled>請選擇城市</option>
+                      <option v-for="city in cities" :key="city" :value="city">
+                        {{ city }}
                       </option>
                     </select>
                     <select
                       class="form-select w-50 p-4 text-neutral-80 fs-8 fs-md-7 fw-medium rounded-3"
                     >
-                      <option value="前金區">
-                        前金區
-                      </option>
-                      <option value="鹽埕區">
-                        鹽埕區
-                      </option>
-                      <option
-                        selected
-                        value="新興區"
-                      >
-                        新興區
+                      <option value="" disabled>請選擇區域</option>
+                      <option v-for="area in areas" :key="area.zipcode" :value="area.zipcode">
+                        {{ area.county }} ({{ area.zipcode }})
                       </option>
                     </select>
                   </div>

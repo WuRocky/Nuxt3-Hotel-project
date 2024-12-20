@@ -2,6 +2,15 @@
 definePageMeta({
   layout: 'account'
 });
+
+import ZipCodeMap from '@/assets/zipcodes';
+
+const cities = Array.from(new Set(ZipCodeMap.map(item => item.city))); 
+const selectedCity = ref("");
+const areas = computed(() => {
+  return ZipCodeMap.filter(item => item.city === selectedCity.value);
+});
+
 const { $swal } = useNuxtApp();
 const router = useRouter();
 const config = useRuntimeConfig();
@@ -313,30 +322,24 @@ const isEmailAndPasswordValid = ref(false);
               class="d-flex gap-2 mb-2"
             >
               <select
+                id="city"
+                v-model="selectedCity"
                 class="form-select p-4 text-neutral-80 fw-medium rounded-3"
               >
-                <option
-                  selected
-                  value="高雄市"
-                >
-                  高雄市
+                <option value="" disabled>請選擇城市</option>
+                <option v-for="city in cities" :key="city" :value="city">
+                  {{ city }}
                 </option>
               </select>
+              
               <select
-                class="form-select p-4 text-neutral-80 fw-medium rounded-3"
+                id="area"
                 v-model="userRegisteObject.address.zipcode"
+                class="form-select p-4 text-neutral-80 fw-medium rounded-3"
               >
-                <option value="801">
-                  前金區
-                </option>
-                <option value="803">
-                  鹽埕區
-                </option>
-                <option
-                  selected
-                  value="800"
-                >
-                  新興區
+                <option value="" disabled>請選擇區域</option>
+                <option v-for="area in areas" :key="area.zipcode" :value="area.zipcode">
+                  {{ area.county }} ({{ area.zipcode }})
                 </option>
               </select>
             </div>
