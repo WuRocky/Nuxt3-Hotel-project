@@ -4,7 +4,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   "runtimeConfig":{
     "public": {
-      "apiUrl": "https://nuxr3.zeabur.app/"
+      // "apiUrl": "https://nuxr3.zeabur.app/"
+      "apiUrl": "https://freyja-9j71.onrender.com/"
     }
   },
 

@@ -31,8 +31,8 @@ const signOut = () => {
   isLoggedIn.value = false;  // 更新狀態
 };
 
+fetchUserData();
 onMounted(() => {
-  fetchUserData();
   window.addEventListener('scroll', handleScroll);
 });
 
