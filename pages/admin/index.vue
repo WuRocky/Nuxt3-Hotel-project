@@ -1,16 +1,24 @@
 <script setup>
 definePageMeta({
-    middleware: ["auth", "admin"],
+  middleware: ["auth", "admin"],
+  layout: 'admin'
 });
+
+
 
 </script>
 
 <template>
-    <div>
-
-    </div>   
+  <div class="container mt-12">
+      <div class="row">
+          <AdminNews/>
+          <AdminCulinary/>
+          <AdminRooms />
+          <AdminOrders />
+      </div>
+  </div>
 </template>
 
 <style lang='scss' scoped>
 
-</style>\
+</style>

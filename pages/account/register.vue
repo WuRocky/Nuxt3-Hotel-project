@@ -31,6 +31,17 @@ const userRegisteObject = ref({
   },
 });
 const processRegistration = async (requestBody) => {
+  if (!isAgreementChecked.value) {
+    $swal.fire({
+      position: "center",
+      icon: "error",
+      title: "請勾選『我已閱讀並同意本網站個資使用規範』",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    return;
+  }
+
   if (!requestBody.birthday.year || !requestBody.birthday.month || !requestBody.birthday.day) {
     $swal.fire({
       position: "center",
@@ -74,8 +85,10 @@ const processRegistration = async (requestBody) => {
   }
 };
 
-const handleNextStep = () => {
+const handleNextStep = async (requestBody) => {
   const password = userRegisteObject.value.password;
+  const email = userRegisteObject.value.email;
+
   if (password.length < 8) {
     $swal.fire({
       position: "center",
@@ -98,6 +111,18 @@ const handleNextStep = () => {
     return;
   }
 
+  if (/^[a-zA-Z]+$/.test(password)) {
+    $swal.fire({
+      position: "center",
+      icon: "error",
+      title: "密碼不能只有英文",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    return;
+  }
+
+
   if (password !== confirmPassword.value) {
     $swal.fire({
       position: "center",
@@ -108,9 +133,15 @@ const handleNextStep = () => {
     });
     return;
   }
+
+  const responseEamil = await $fetch(`${apiUrl}api/v1/verify/email`, {
+      method: "POST",
+      body: {email},
+    });
   isEmailAndPasswordValid.value = true;
 };
-
+const confirmPassword = ref("");
+const isAgreementChecked = ref(false);
 const isEmailAndPasswordValid = ref(false);
 
 </script>
@@ -213,6 +244,7 @@ const isEmailAndPasswordValid = ref(false);
             placeholder="請再輸入一次密碼"
             pattern=".{8,}"
             required
+            v-model="confirmPassword"
             type="password"
           >
         </div>
@@ -359,7 +391,7 @@ const isEmailAndPasswordValid = ref(false);
             id="agreementCheck"
             class="form-check-input"
             type="checkbox"
-            value=""
+            v-model="isAgreementChecked"
             required
           >
           <label

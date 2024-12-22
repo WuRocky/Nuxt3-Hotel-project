@@ -23,7 +23,6 @@
                 maxAge: 6000,
             });
             cookie.value = data.value.token;
-
             const userEmail = useCookie('userEmail',{
                 path: "/",
                 maxAge: 6000,
@@ -37,7 +36,7 @@
                 showConfirmButton: false,
                 timer: 1500,
             });
-            router.push("/member/orders");
+            // router.push("/");
         } catch(error) {
             const { message } = error.response._data;
             if (Array.isArray(message)) {

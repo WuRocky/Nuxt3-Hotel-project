@@ -1,4 +1,5 @@
 <script setup>
+const router = useRouter();
 const route = useRoute();
 const transparentBgRoute = ['index','rooms'];
 
@@ -12,26 +13,26 @@ const handleScroll = () => {
 const config = useRuntimeConfig();
 const apiUrl = config.public.apiUrl;
 const getUserCookie = useCookie("auth");
+const getUserAdminCookie = useCookie("userEmail");
 const isLoggedIn = ref(!!getUserCookie.value); // 根據 cookie 初始化登錄狀態
-const data = ref(null);
-
-const fetchUserData = async () => {
-  if (isLoggedIn.value) {
-    const { data: userData } = await useFetch(`${apiUrl}api/v1/user/`, {
+const userData = ref([])
+if (isLoggedIn.value) {
+    const { data } = await useFetch(`${apiUrl}api/v1/user/`, {
       headers: {
         Authorization: `Bearer ${getUserCookie.value}`,
       },
     });
-    data.value = userData.value;
-  }
-};
+    userData.value = data.value
+}
+const userEmail = useCookie('userEmail').value;
 
 const signOut = () => {
   getUserCookie.value = null; // 清空 cookie
+  getUserAdminCookie.value = null; // 清空 cookie
   isLoggedIn.value = false;  // 更新狀態
+  router.push("/");
 };
 
-fetchUserData();
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
 });
@@ -85,7 +86,7 @@ onUnmounted(() => {
                   data-bs-toggle="dropdown"
                 >
                   <Icon class="fs-5" icon="mdi:account-circle-outline" />
-                  {{ data?.result?.name || '用戶' }}
+                  {{ userData.result.name}}
                 </button>
                 <ul
                   class="dropdown-menu py-3 overflow-hidden"
@@ -116,7 +117,15 @@ onUnmounted(() => {
                 會員登入
               </NuxtLink>
             </li>
-            <li class="nav-item">
+            <li v-if="userEmail=='admin@gmail.com'" class="nav-item">
+              <NuxtLink 
+                to="/admin"
+                class="btn btn-primary-100 px-8 py-4 text-white fw-bold border-0 rounded-3"
+              >
+                管理者後台
+              </NuxtLink>
+            </li>
+            <li v-else class="nav-item">
               <NuxtLink
                 to="/rooms"
                 class="btn btn-primary-100 px-8 py-4 text-white fw-bold border-0 rounded-3"
@@ -124,6 +133,7 @@ onUnmounted(() => {
                 立即訂房
               </NuxtLink>
             </li>
+
           </ul>
         </div>
       </div>

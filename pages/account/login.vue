@@ -23,6 +23,13 @@ const loginAccount = async (body) => {
       maxAge: 6000,
     });
     cookie.value = token;
+
+    const userEmail = useCookie('userEmail',{
+      path: "/",
+      maxAge: 6000,
+    });
+    userEmail.value = userLoginObject.value.email;
+
     $swal.fire({
         position: "center",
         icon: "success",
@@ -30,7 +37,10 @@ const loginAccount = async (body) => {
         showConfirmButton: false,
         timer: 1500,
       });
-    router.push("/member/orders");
+
+
+      
+    router.push("/");
   } catch(error) {
       const { message } = error.response._data;
       if (Array.isArray(message)) {
