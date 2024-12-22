@@ -5,9 +5,26 @@ export default defineNuxtConfig({
   "runtimeConfig":{
     "public": {
       // "apiUrl": "https://nuxr3.zeabur.app/"
-      "apiUrl": "https://freyja-9j71.onrender.com/"
+      "apiUrl": process.env.BASE_URL,
+      
     }
   },
+
+  app: {
+    head: {
+      viewport: "width=device-width, initial-scale=1",
+      title: "享樂酒店 | Enjoyment Luxury Hotel",
+      charset: "utf-8",
+      meta: [
+        {
+          name: "description",
+          content: "六角學院 Nuxt3 專題內容，利用學習到的內容串接製作專題",
+        },
+      ]
+    }
+  },
+
+
 
 
   css: ["@/assets/stylesheets/all.scss"],
