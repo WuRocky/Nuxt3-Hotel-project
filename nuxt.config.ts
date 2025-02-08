@@ -4,7 +4,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   "runtimeConfig":{
     "public": {
-      // "apiUrl": "https://nuxr3.zeabur.app/"
       "apiUrl": process.env.BASE_URL,
       
     }

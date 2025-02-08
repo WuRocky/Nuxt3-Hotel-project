@@ -1,4 +1,4 @@
-# [享樂酒店 | Enjoyment Luxury Hotel](https://nuxt3-hotel-project.zeabur.app/)
+# [享樂酒店 | Enjoyment Luxury Hotel](https://my-nuxt3-project.onrender.com/)
 
 這是我參加 [六角學院 Nuxt3 課程](https://www.hexschool.com/courses/nuxt3-training.html) 完成的專案。  
 專案成品已部署於 [Render](https://render.com/)，歡迎參觀：[專案連結](https://my-nuxt3-project.onrender.com/)。
